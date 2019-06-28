@@ -1,0 +1,15 @@
+{
+  "name": "ioc-state-manager",
+  "version": "1.0.0",
+  "description": "a simple service based state management",
+  "author": "Markus Gilg<markusgilg@outlook.de>",
+  "license": "MIT",
+  "keywords": [
+    "angular", "state", "state manager", "library"
+  ],
+  "peerDependencies": {
+    "@angular/common": "^7.2.0",
+    "@angular/core": "^7.2.0",
+    "lodash": "^4.17.11"
+  }
+}
