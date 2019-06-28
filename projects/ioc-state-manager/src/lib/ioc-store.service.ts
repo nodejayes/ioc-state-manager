@@ -1,7 +1,9 @@
 import {EventEmitter} from '@angular/core';
-import {cloneDeep} from 'lodash';
+import {get, cloneDeep} from 'lodash';
 import {getDifferenceKey} from './utils/get-difference-key';
 import {deepObjectDifference} from './utils/deep-object-difference';
+import {BehaviorSubject, Observable, Subject, Subscriber} from 'rxjs';
+import {startWith} from 'rxjs/operators';
 
 export interface IMutation {
     type: string;
@@ -20,17 +22,21 @@ class IocStoreService {
     private store = {};
 
     public OnMutation = new EventEmitter<IMutationEvent>();
-    private listener: { [key: string]: EventEmitter<any> } = {};
+    private listener: { [key: string]: Subject<any> } = {};
     private selectors: { [key: string]: (state: any) => any } = {};
 
-    public Listen<T, K>(key: string, selector: (state: T) => any): EventEmitter<K> {
+    public Listen<T, K>(key: string, selector: (state: T) => any): Observable<K> {
+        let obs = null;
         if (!this.listener[key]) {
-            this.listener[key] = new EventEmitter<K>();
+            this.listener[key] = new Subject<K>();
+            obs = this.listener[key].asObservable().pipe(
+                startWith(get(this.store, key))
+            );
         }
         if (!this.selectors[key]) {
             this.selectors[key] = selector;
         }
-        return this.listener[key];
+        return obs;
     }
 
     /**
@@ -43,7 +49,7 @@ class IocStoreService {
             return;
         }
         const value = selector(state);
-        emitter.emit(value);
+        emitter.next(value);
     }
 
     /**
