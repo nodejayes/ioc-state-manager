@@ -1,2 +1,8 @@
-<h1>Welcome to ioc-state-manager!</h1>
-<button (click)="login()">Test</button>
+<div>
+    <b>Counter: {{value$ | async}}</b>
+</div>
+<div>
+    <input type="text" [(ngModel)]="step" />
+    <button (click)="increment()">+</button>
+    <button (click)="decrement()">-</button>
+</div>

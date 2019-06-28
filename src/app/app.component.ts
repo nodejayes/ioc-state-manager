@@ -1,4 +1,5 @@
 import { Component }       from '@angular/core';
+import {CounterStateService} from './store/counter/counter-state.service';
 
 @Component({
   selector: 'app-root',
@@ -6,8 +7,28 @@ import { Component }       from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor() {}
+  value$ = this.counterState.onValueChange;
+  step = 1;
 
-  login() {
+  constructor(private counterState: CounterStateService) {}
+
+  increment() {
+    const v = parseInt(this.step.toString(), 10);
+    if (!isNaN(v)) {
+      const newOne = this.counterState.Value + v;
+      if (newOne <= this.counterState.MaxValue && newOne >= this.counterState.MinValue) {
+        this.counterState.increment(v);
+      }
+    }
+  }
+
+  decrement() {
+    const v = parseInt(this.step.toString(), 10);
+    if (!isNaN(v)) {
+      const newOne = this.counterState.Value - v;
+      if (newOne <= this.counterState.MaxValue && newOne >= this.counterState.MinValue) {
+        this.counterState.decrement(v);
+      }
+    }
   }
 }
