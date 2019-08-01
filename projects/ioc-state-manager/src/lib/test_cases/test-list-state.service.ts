@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {IDetectable, IListState, ListStateService} from '../list-state.service';
 import {OnMutation} from '../side-effects.decorator';
+import {IMutation} from '../ioc-store.service';
 
 export enum TestStateNames {
     TEST = 'test',
@@ -19,6 +20,9 @@ export enum TestMutations {
     Load = '[test] load',
     LoadSuccess = '[test] load success',
     LoadFail = '[test] load fail',
+    Create = '[test] create',
+    CreateSuccess = '[test] create success',
+    CreateFail = '[test] create fail',
 }
 
 @Injectable()
@@ -26,6 +30,9 @@ export class TestStateService extends ListStateService<ITestState, IUser> {
     static loadMutation = TestMutations.Load;
     static loadSuccessMutation = TestMutations.LoadSuccess;
     static loadFailMutation = TestMutations.LoadFail;
+    static createMutation = TestMutations.Create;
+    static createSuccessMutation = TestMutations.CreateSuccess;
+    static createFailMutation = TestMutations.CreateFail;
 
     constructor() {
         super(TestStateNames.TEST, {
@@ -46,6 +53,14 @@ export class TestStateService extends ListStateService<ITestState, IUser> {
                 {id: 2, name: 'Paul'},
                 {id: 3, name: 'Martina'},
             ]);
+        }, 1000);
+    }
+
+    @OnMutation(TestMutations.Create)
+    private onCreate(mutation: IMutation) {
+        // simulate Server Request
+        setTimeout(() => {
+            this.createSuccess(mutation.payload);
         }, 1000);
     }
 

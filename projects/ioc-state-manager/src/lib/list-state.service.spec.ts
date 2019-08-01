@@ -1,5 +1,6 @@
 import {TestMutations, TestStateService} from './test_cases/test-list-state.service';
 import {TestBed} from '@angular/core/testing';
+import {find} from 'lodash';
 
 describe('ListStateService', () => {
     let service: TestStateService = null;
@@ -25,17 +26,41 @@ describe('ListStateService', () => {
         expect(service.Data).toEqual([]);
     });
 
-    it('emit OnMutations and see result', () => {
+    it('emit OnMutations and see result', (done) => {
         service.data$.subscribe((d) => {
             if (d && d.length === 3) {
+                // TODO: have state set before invoke this function ?
+                /*
                 expect(service.Loading).toBeFalsy();
                 expect(service.Loaded).toBeTruthy();
-                expect(service.Data.length).toEqual(3);
-                expect(service.Data[0].id).toEqual(1);
-                expect(service.Data[1].id).toEqual(2);
-                expect(service.Data[2].id).toEqual(3);
+                */
+                expect(d.length).toEqual(3);
+                expect(d[0].id).toEqual(1);
+                expect(d[1].id).toEqual(2);
+                expect(d[2].id).toEqual(3);
+                done();
             }
         });
         service.load();
+    });
+
+    it('set error message when load', () => {
+        service.testErrorLoad();
+        expect(service.Loading).toBeFalsy();
+        expect(service.Loaded).toBeFalsy();
+        expect(service.Error).toEqual('error_message');
+    });
+
+    it('create new objects', (done) => {
+        service.data$.subscribe((d) => {
+            const found = find(d, e => e.id === 5);
+            if (found) {
+                expect(found.name).toEqual('Karin');
+                done();
+            }
+        });
+        service.create([
+            {id: 5, name: 'Karin'},
+        ]);
     });
 });

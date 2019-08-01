@@ -2,6 +2,7 @@ import {IocService} from './ioc-service';
 import {Mutation} from './mutation.decorator';
 import {replaceItems} from './utils/replace-items';
 import {removeItems} from './utils/remove-items';
+import {appendItems} from './utils/appendItems';
 
 export type IdValue = string | number;
 
@@ -83,7 +84,7 @@ export class ListStateService<T extends IListState<K>, K extends IDetectable> ex
 
     @Mutation('___LIST_STATE_INTERNAL___createSuccessMutation')
     createSuccess(payload: K[], s?: T) {
-        s.data = replaceItems<K>(s.data, payload);
+        s.data = appendItems(s.data, payload);
         s.loaded = true;
         s.loading = false;
         s.error_msg = null;
