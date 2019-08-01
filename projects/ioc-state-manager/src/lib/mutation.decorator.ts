@@ -8,6 +8,15 @@ export function Mutation(type: string) {
     return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         const method = descriptor.value;
         descriptor.value = function() {
+            if (type.startsWith('___LIST_STATE_INTERNAL___')) {
+                const key = type.replace('___LIST_STATE_INTERNAL___', '');
+                type = this.constructor[key];
+                if (!type) {
+                    // no mutation definition in child class found
+                    console.warn(`no mutation mapping found for ${key} in ${target.constructor.name} class define one as static string`);
+                    return;
+                }
+            }
             const mutation: IMutation = {type};
             if (arguments[0]) {
                 mutation.payload = arguments[0];

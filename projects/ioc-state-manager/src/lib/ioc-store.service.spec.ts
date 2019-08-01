@@ -38,25 +38,31 @@ describe('IocStateService', () => {
 
     it('fire EventEmitters', (done) => {
         service.onVersionChange.subscribe((d: number) => {
-            expect(d).toBe(42);
-            done();
+            if (d !== 0) {
+                expect(d).toBe(42);
+                done();
+            }
         });
         service.FirstMutation(42);
     });
 
     it('fire EventEmitters with subobjects', (done) => {
         service.onComplexChange.subscribe((d: IUser) => {
-            expect(d.id).toBe(42);
-            expect(d.name).toBe('other');
-            done();
+            if (d.id !== 1) {
+                expect(d.id).toBe(42);
+                expect(d.name).toBe('other');
+                done();
+            }
         });
         service.ChangeUser({id: 42, name: 'other'});
     });
 
     it('fire EventEmitters with subobjects change key', (done) => {
         service.onComplexChange.subscribe((d: IUser) => {
-            expect(d.name).toBe('klaus');
-            done();
+            if (d.id !== 1) {
+                expect(d.name).toBe('klaus');
+                done();
+            }
         });
         service.ChangeUserName('klaus');
     });
@@ -66,9 +72,11 @@ describe('IocStateService', () => {
             service.onComplexChange,
             service.onComplexNameChange,
         ).subscribe((values) => {
-            expect((values[0] as IUser).name).toBe('peter');
-            expect(values[1]).toBe('peter');
-            done();
+            if ((values[0] as IUser).name !== 'Udo') {
+                expect((values[0] as IUser).name).toBe('peter');
+                expect(values[1]).toBe('peter');
+                done();
+            }
         });
         service.ChangeUserName('peter');
     });
