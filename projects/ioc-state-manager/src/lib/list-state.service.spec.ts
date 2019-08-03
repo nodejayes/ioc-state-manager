@@ -63,4 +63,38 @@ describe('ListStateService', () => {
             {id: 5, name: 'Karin'},
         ]);
     });
+
+    it('update existing objects', (done) => {
+        service.create([
+            {id: 6, name: ''},
+        ]);
+
+        service.data$.subscribe(d => {
+            const found = find(d, e => e.id === 6);
+            if (found && found.name.length > 0) {
+                expect(found.name).toEqual('updated');
+                done();
+            }
+        });
+        service.update([
+            {id: 6, name: 'updated'},
+        ]);
+    });
+
+    it('delete existing objects', (done) => {
+        service.create([
+            {id: 7, name: 'delete me'},
+            {id: 8, name: 'delete me not'},
+        ]);
+
+        service.data$.subscribe(d => {
+            const found = find(d, e => e.id === 8);
+            const deleted = find(d, e => e.id === 7);
+            if (found && !deleted) {
+                expect(deleted).toBeUndefined();
+                done();
+            }
+        });
+        service.delete([7]);
+    });
 });
