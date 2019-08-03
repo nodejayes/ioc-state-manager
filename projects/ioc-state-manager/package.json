@@ -1,6 +1,6 @@
 {
   "name": "ioc-state-manager",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "a simple service based state management",
   "author": "Markus Gilg<markusgilg@outlook.de>",
   "license": "MIT",
